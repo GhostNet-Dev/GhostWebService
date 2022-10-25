@@ -10,10 +10,11 @@ import (
 )
 
 const (
-	defaultConfigFilename = "stingoftheviper"
+	defaultConfigFilename = "global"
 	envPrefix             = "GWS" // GhostWebServer
 )
 
+// NewRootCommand Build the cobra command that handles our command line tool.
 func NewRootCommand() *cobra.Command {
 	// Define our command
 	rootCmd := &cobra.Command{

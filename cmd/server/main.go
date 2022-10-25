@@ -2,7 +2,7 @@ package main
 
 import (
 	"os"
-	"github.com/GhostNet-Dev/GhostWebService/cmd/commands"
+	"github.com/GhostNet-Dev/GhostWebService/cmd/server/commands"
 )
 
 
