@@ -38,18 +38,21 @@ var RootCmd = &cobra.Command{
 		// Working with OutOrStdout/OutOrStderr allows us to unit test our command easier
 		//out := cmd.OutOrStdout()
 		var server webserver.HttpServer
+		server.RootPath = rootPath
 		server.StartServer(host, port)
 	},
 }
 
 var (
-	host string
-	port string
+	host     string
+	port     string
+	rootPath string
 )
 
 func init() {
 	RootCmd.Flags().StringVarP(&host, "ip", "i", "127.0.0.1", "Host Address")
 	RootCmd.Flags().StringVarP(&port, "port", "p", "8080", "Port Number")
+	RootCmd.Flags().StringVarP(&rootPath, "rootPath", "", "", "Home Directory Path")
 }
 
 func initializeConfig(cmd *cobra.Command) error {
@@ -67,7 +70,6 @@ func initializeConfig(cmd *cobra.Command) error {
 	v.AutomaticEnv()
 
 	bindFlags(cmd, v)
-
 	return nil
 }
 

@@ -7,7 +7,9 @@ import (
 	"strings"
 )
 
+// HttpServer for Web Service
 type HttpServer struct {
+	RootPath string
 	param map[string]interface{}
 }
 
