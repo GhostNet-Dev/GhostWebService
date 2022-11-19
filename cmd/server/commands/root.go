@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
-	"github.com/GhostNet-Dev/GhostWebService/pkg/webserver"
+	ghostweb "github.com/GhostNet-Dev/GhostWebService/internal/ghostweb"
 )
 
 const (
@@ -37,9 +37,7 @@ var RootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		// Working with OutOrStdout/OutOrStderr allows us to unit test our command easier
 		//out := cmd.OutOrStdout()
-		var server webserver.HttpServer
-		server.RootPath = rootPath
-		server.StartServer(host, port)
+		ghostweb.StartGhostWeb(rootPath, host, port)
 	},
 }
 
@@ -59,6 +57,7 @@ func initializeConfig(cmd *cobra.Command) error {
 	v := viper.New()
 	v.SetConfigName(defaultConfigFilename)
 	v.AddConfigPath(".")
+	v.AddConfigPath("../")
 
 	if err := v.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {

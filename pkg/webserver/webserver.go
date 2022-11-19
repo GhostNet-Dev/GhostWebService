@@ -4,36 +4,40 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"strings"
 )
 
-// HttpServer for Web Service
-type HttpServer struct {
+// GhostWeb for Web Service
+var (
 	RootPath string
 	param map[string]interface{}
+	urlMap map[string]interface{}
+)
+
+func init() {
+	param = make(map[string]interface{})
+	urlMap = make(map[string]interface{})
 }
 
-func (httpServer *HttpServer) indexHandler(w http.ResponseWriter, r *http.Request) {
-	// Ref: https://pkg.go.dev/net/url#URL
-	httpServer.param["UrlParam"] = r.URL.Query()
-	var filename string
-	if r.URL.Path == "/" {
-		filename = "index.html"
-	} else {
-		filename = strings.TrimLeft(r.URL.Path, "/")
-	}
+// RegisterCallMap regist callback handler when parsing url 
+func RegisterCallMap(url string, handler interface{}) {
+	urlMap[url] = handler
+}
+
+func processingHandler(w http.ResponseWriter, r *http.Request) {
+	var internalParam, filename = urlMap[r.URL.Path].(func() (interface{}, string))()
+
+	param["UrlParam"] = r.URL.Query() 	// Ref: https://pkg.go.dev/net/url#URL
+	param["InternalParam"] = internalParam
 
 	if t, err := template.ParseFiles(filename); err != nil {
 		log.Fatal(err)
 	} else {
-		t.Execute(w, httpServer.param)
+		t.Execute(w, param)
 	}
 }
 
 // StartServer web site 첫 화면과 그것을 구성하는 파일을 Service 할 수 있는 handler를 등록한다.
-func (httpServer *HttpServer) StartServer(host string, port string) {
-	httpServer.param = make(map[string]interface{})
-
-	http.HandleFunc("/", httpServer.indexHandler) // indexHandler에 httpServer를 붙여야한다..why?
+func StartServer(host string, port string) {
+	http.HandleFunc("/", processingHandler) // indexHandler에 httpServer를 붙여야한다..why?
 	log.Fatal(http.ListenAndServe(host+":"+port, nil))
 }

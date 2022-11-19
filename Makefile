@@ -20,8 +20,13 @@ build:
 ifeq ($(OS),Windows_NT)
 	GOARCH=amd64 GOOS=window go build -o $(APP_BIN_PATH)-windows ${APP_SRC_PATH}/main.go
 else
-	GOARCH=amd64 GOOS=darwin go build -o $(APP_BIN_PATH)-darwin ${APP_SRC_PATH}/main.go
-	GOARCH=amd64 GOOS=linux go build -o $(APP_BIN_PATH)-linux ${APP_SRC_PATH}/main.go
+    UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Linux)
+		GOARCH=amd64 GOOS=linux go build -o $(APP_BIN_PATH)-linux ${APP_SRC_PATH}/main.go
+    endif
+    ifeq ($(UNAME_S),Darwin)
+		GOARCH=amd64 GOOS=darwin go build -o $(APP_BIN_PATH)-darwin ${APP_SRC_PATH}/main.go
+    endif
 endif
 
 runs:
