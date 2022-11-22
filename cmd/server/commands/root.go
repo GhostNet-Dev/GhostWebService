@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"strings"
+	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -37,6 +38,11 @@ var RootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		// Working with OutOrStdout/OutOrStderr allows us to unit test our command easier
 		//out := cmd.OutOrStdout()
+		currentPath, _ := os.Getwd()
+		fmt.Println("root: ", rootPath)
+		fmt.Println("host: ", host, "port: ", port)
+		fmt.Println("Current Path: ", currentPath)
+		
 		ghostweb.StartGhostWeb(rootPath, host, port)
 	},
 }
